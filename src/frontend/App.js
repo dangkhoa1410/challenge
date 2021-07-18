@@ -2,20 +2,29 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Table from "./components/Table";
 import { getUsers, getItems, getAgeWithCount } from "./components/API";
+import Loader from 'react-spinners/BeatLoader'
 
 const App = () => {
   const [users, setUsers] = useState(null);
   const [allItems, setAllItems] = useState(null);
   const [thisItem, setThisItem] = useState(null);
   const [ageWithCount, setAgeWithCount] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
+  const [ApiLoading, SetApiLoading] = useState(false)
 
   useEffect(() => {
-    getUsers().then((users) => setUsers(users));
-    getItems().then((items) => setAllItems(items));
+    setIsLoading(true);
+    Promise.all([getUsers(), getItems()]).then(([users, items]) => {
+      setUsers(users);
+      setAllItems(items);
+      setIsLoading(false);
+    });
   }, []);
 
-  useEffect(() => {
-    thisItem && getAgeWithCount(thisItem).then(data => setAgeWithCount(data))
+  useEffect(() => {    
+    thisItem && SetApiLoading(true) & getAgeWithCount(thisItem).then(data => {
+        setAgeWithCount(data)
+        SetApiLoading(false)})    
   }, [thisItem]);
 
   const SelectHandler = e => {
@@ -28,11 +37,15 @@ const App = () => {
       <div className="row">
         <h1>All Users </h1>
         <p>Users and their age</p>
-        <Table
+        {
+          isLoading 
+          ? <Loader />
+          : <Table
           thead={["Username", "Age"]}
           tcol={["username", "age"]}
           tdata={users}
         />
+        }
       </div>
       <div className="row">
         <h1>Age Demographic of Users With</h1>
@@ -46,11 +59,16 @@ const App = () => {
               );
             })}
         </select>
-        <Table
+        {
+          ApiLoading 
+          ? <Loader />
+          : <Table
           thead={["Age", "Count"]}
           tcol={["age", "count"]}
           tdata={ageWithCount}
         />
+        }
+        
       </div>
     </div>
   );
