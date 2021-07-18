@@ -3,6 +3,7 @@ import React from "react";
 const Table = (props) => {
   const { thead, tcol, tdata } = props;
   return (
+    <div className="row">
     <div className="col-6 border">
       <table className="table">
         <thead>
@@ -25,6 +26,7 @@ const Table = (props) => {
             })}
         </tbody>
       </table>
+    </div>
     </div>
   );
 };
