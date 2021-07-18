@@ -21,14 +21,42 @@ const getUsers = () => {
     return mockDBCall(dataAccessMethod);
 };
 
+const getAllItems = () => {
+    const dataAccessMethod = () => {
+        let itemList = []
+        _.map(db.itemsOfUserByUsername, items => {
+        
+        for (let idx=0; idx<items.length; idx++) {
+            if(!itemList.includes(items[idx])) {
+                itemList.push(items[idx])
+            }
+        }
+        })
+        
+
+        return itemList
+    }
+    return mockDBCall(dataAccessMethod);
+};
+
 const getListOfAgesOfUsersWith = (item) => {
     const dataAccessMethod = () => {
         // fill me in :)
+        const usernamesWithSelectedItem = Object.keys(_.pickBy(db.itemsOfUserByUsername, user => user.includes(item)))        
+        const usersFilteredWithItem = _.filter(db.usersById, user => usernamesWithSelectedItem.includes(user.username))
+        const result = _.chain(usersFilteredWithItem)
+        .countBy('age')
+        .map((value,key) =>{            
+            return {age:key,count:value}
+        })
+        
+        return result
     }
     return mockDBCall(dataAccessMethod);
 }
 
 module.exports = {
     getUsers,
-    getListOfAgesOfUsersWith
+    getListOfAgesOfUsersWith,
+    getAllItems
 };
