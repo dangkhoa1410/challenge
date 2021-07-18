@@ -1,8 +1,14 @@
 import React from 'react'
 import "./App.css";
+import Table from './components/Table';
 
 const App = () => {
-  return <h1>Hello</h1>
+  
+  return (
+    <div className="container">
+      <h1>Hello </h1>
+    </div>
+  )
 }
 
 export default App
